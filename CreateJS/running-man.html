@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>running-man game</title>
+</head>
+<body>
+  <canvas id="demoCanvas" width="960" height="400"></canvas>
+  
+  <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
+  <script>
+    window.onload = () => {
+      var stage, w, h, loader;
+      var sky, grant, ground, hill, hill2;
+
+      function init() {
+        stage = new createjs.StageGL("demoCanvas");
+
+        // 获取画布的宽和高，后面计算使用
+        w = stage.canvas.width;     // 960
+        h = stage.canvas.height;    // 400
+
+        // 定义静态资源
+        let manifest = [{
+          src: "spritesheet_grant.png", id: "grant"}, {     // 任务雪碧图
+          src: "sky.png", id: "sky"}, {           // 天空
+          src: "ground.png", id: "ground"}, {     // 地面
+          src: "hill1.png", id: "hill"}, {        // 远山
+          src: "hill2.png", id: "hill2"           // 近山
+        }];
+        
+        // 创建资源加载队列
+        loader = new createjs.LoadQueue(false);
+        // 添加"资源加载完成"事件
+        loader.addEventListener("complete", handleComplete);
+        // 加载资源
+        loader.loadManifest(manifest, true, "./assets/img/");
+      }
+
+      /**
+       * 静态资源加载完成，处理函数
+       */
+      function handleComplete() {
+        // 渲染天空
+        sky = new createjs.Shape();
+        sky.graphics.beginBitmapFill(loader.getResult("sky")).drawRect(0, 0, w, h);
+        //By default swapping between Stage for StageGL will not allow for vector drawing operation such as BitmapFill, useless you cache your shape.
+        sky.cache(0, 0, w, h);
+
+        // 渲染地面
+        var groundImg = loader.getResult("ground");
+        ground = new createjs.Shape();
+        ground.graphics.beginBitmapFill(groundImg).drawRect(0, 0, w + groundImg.width, groundImg.height);
+        ground.tileW = groundImg.width;
+        ground.y = h - groundImg.height;
+        //By default swapping between Stage for StageGL will not allow for vector drawing operation such as BitmapFill, useless you cache your shape.
+        ground.cache(0, 0, w + groundImg.width, groundImg.height);
+
+        // 随机渲染远处山脉
+        hill = new createjs.Bitmap(loader.getResult("hill"));
+        hill.setTransform(Math.random() * w, h - hill.image.height * 4 - groundImg.height, 4, 4);
+        hill.alpha = 0.5;     // 设置透明度
+
+        // 随机渲染近处山脉
+        hill2 = new createjs.Bitmap(loader.getResult("hill2"));
+        hill2.setTransform(Math.random() * w, h - hill2.image.height * 3 - groundImg.height, 3, 3);
+
+        var spriteSheet = new createjs.SpriteSheet({
+          framerate: 30,
+          "images": [loader.getResult("grant")],
+          "frames": {"regX": 82, "height": 292, "count": 64, "regY": 0, "width": 165},
+          // define two animations, run (loops, 1.5x speed) and jump (returns to run):
+          "animations": {
+            "run": [0, 25, "run", 1.5],
+            "jump": [26, 63, "run"]
+          }
+        });
+        grant = new createjs.Sprite(spriteSheet, "run");
+        grant.y = 35;
+
+        // 将生成的所有内容渲染至舞台
+        stage.addChild(sky, hill, hill2, ground, grant);
+
+        // 监听舞台上的鼠标点击事件
+        stage.addEventListener("stagemousedown", handleJumpStart);
+
+        createjs.Ticker.timingMode = createjs.Ticker.RAF;
+        createjs.Ticker.addEventListener("tick", tick);
+      }
+
+      /**
+       * 舞台点击事件处理函数
+       */
+      function handleJumpStart() {
+        grant.gotoAndPlay("jump");
+      }
+
+      /**
+       * 定时器-重绘舞台
+       */
+      function tick(event) {
+        var deltaS = event.delta / 1000;
+        var position = grant.x + 150 * deltaS;
+
+        var grantW = grant.getBounds().width * grant.scaleX;
+        grant.x = (position >= w + grantW) ? -grantW : position;
+
+        ground.x = (ground.x - deltaS * 150) % ground.tileW;
+        hill.x = (hill.x - deltaS * 30);
+        if (hill.x + hill.image.width * hill.scaleX <= 0) {
+          hill.x = w;
+        }
+        hill2.x = (hill2.x - deltaS * 45);
+        if (hill2.x + hill2.image.width * hill2.scaleX <= 0) {
+          hill2.x = w;
+        }
+
+        stage.update(event);
+      }
+
+      // 程序主入口-初始化
+      init()
+    }
+  </script>
+</body>
+</html>

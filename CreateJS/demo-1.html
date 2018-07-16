@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>CreateJS-Demo1</title>
+</head>
+<body>
+  <!-- Text Class -->
+  <canvas id="demo1" width="650" height="400"></canvas>
+
+  <!-- <canvas id="demo2" width="650" height="400"></canvas>
+
+  <canvas id="demo3" width="650" height="400"></canvas>
+
+  <canvas id="demo4" width="650" height="400"></canvas>
+
+  <canvas id="demo5" width="650" height="400"></canvas>
+
+  <canvas id="demo6" width="650" height="400"></canvas>
+
+  <canvas id="demo7" width="650" height="400"></canvas>
+  
+  <canvas id="demo8" width="650" height="400"></canvas>
+
+  <canvas id="demo9" width="650" height="400"></canvas>
+
+  <canvas id="demo10" width="650" height="400"></canvas>
+
+  <canvas id="demo11" width="650" height="400"></canvas>
+
+  <canvas id="demo12" width="650" height="400"></canvas> -->
+
+  
+  <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+  <script>
+    window.onload = () => {
+      var stage1 = new createjs.Stage("demo1");
+
+      var text = new createjs.Text("Hello World !", "bold 18px Arial", "#ff7700");
+      text.x = 10;
+      // text.textBaseline = "alphabetic";
+
+      stage1.addChild(text)
+      stage1.update();
+
+      // let circle = new createjs.Shape();
+      // circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
+      // circle.x = 50;
+      // circle.y = 50;
+
+      // var g = new createjs.Graphics();
+      // g.setStrokeStyle(1);
+      // g.beginStroke("#000000");
+      // g.beginFill("red");
+      // g.drawCircle(31,31,30);
+      // var circle1 = new createjs.Shape(g);
+
+      // var myGraphics = new createjs.Graphics()
+      // myGraphics.beginStroke("red").beginFill("blue").drawRect(20, 20, 100, 50);
+      // var rect0 = new createjs.Shape(myGraphics);
+
+      // var graphics = new createjs.Graphics().beginFill("#ff0000").drawRect(200, 0, 200, 100);
+      // var rect1 = new createjs.Shape(graphics);
+
+      // //交替使用也可以使用Shape类的图形属性渲染上面一样。
+      // var rect2 = new createjs.Shape();
+      // rect2.graphics.beginFill("#ff0000").drawRect(500, 0, 300, 300);
+
+      // stage.addChild(circle, circle1, rect0, rect1, rect2);
+    }
+  </script>
+</body>
+</html>
