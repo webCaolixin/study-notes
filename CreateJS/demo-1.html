@@ -7,14 +7,16 @@
   <title>CreateJS-Demo1</title>
 </head>
 <body>
-  <!-- Text Class -->
+  <!-- Text Class 文本类-->
   <canvas id="demo1" width="650" height="400"></canvas>
 
-  <!-- <canvas id="demo2" width="650" height="400"></canvas>
+  <!-- Graphics Class 绘图类 -->
+  <canvas id="demo2" width="650" height="400"></canvas>
 
+  <!-- bitmap Class 图像类 -->
   <canvas id="demo3" width="650" height="400"></canvas>
 
-  <canvas id="demo4" width="650" height="400"></canvas>
+  <!-- <canvas id="demo4" width="650" height="400"></canvas>
 
   <canvas id="demo5" width="650" height="400"></canvas>
 
@@ -33,42 +35,132 @@
   <canvas id="demo12" width="650" height="400"></canvas> -->
 
   
-  <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+  <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
   <script>
     window.onload = () => {
-      var stage1 = new createjs.Stage("demo1");
+      /**
+       * Test Class 文本类 -- demo
+       */
+      let stage1 = new createjs.Stage("demo1");
 
-      var text = new createjs.Text("Hello World !", "bold 18px Arial", "#ff7700");
-      text.x = 10;
-      // text.textBaseline = "alphabetic";
+      let text1 = new createjs.Text("Text 1 !", "bold 26px Arial", "#ff7700");
+      text1.regX = -50;     // 沿X轴负方向的偏移量
+      text1.regY = -50;     // 沿Y轴负方向的偏移量
+      text1.x = 100;        // 绘制源点 X坐标
+      text1.y = 50;         // 绘制源点 Y坐标
 
-      stage1.addChild(text)
+      let text2 = new createjs.Text("旋转+XY拉伸！", "bold 18px Arial", "#ff7700");
+      text2.x = 50;
+      text2.y = 50;
+      text2.rotation = 50;      // 旋转角度 DEG
+      text2.scaleX = 3;         // X轴放大(拉伸)
+      text2.scaleY = 2;         // X轴放大(拉伸)
+
+      let text3 = new createjs.Text("XY轴倾斜", "bold 50px Arial", "#ff7700");
+      text3.x = 300;
+      text3.y = 200;
+      text3.skewX = 45;         // X轴倾斜角度 DEG
+      text3.skewY = 20;      // Y周倾斜角度 DEG
+
+      let text4 = new createjs.Text("文字shadow", "bold 30px Arial", "#ff7700");
+      text4.x = 400;
+      text4.y = 100;
+      text4.shadow = new createjs.Shadow("#000000", 5, 5, 10);      // 创建一个shadow实例Object
+
+      stage1.addChild(text1, text2, text3, text4);
       stage1.update();
 
-      // let circle = new createjs.Shape();
-      // circle.graphics.beginFill("DeepSkyBlue").drawCircle(0, 0, 50);
-      // circle.x = 50;
-      // circle.y = 50;
 
-      // var g = new createjs.Graphics();
-      // g.setStrokeStyle(1);
-      // g.beginStroke("#000000");
-      // g.beginFill("red");
-      // g.drawCircle(31,31,30);
-      // var circle1 = new createjs.Shape(g);
+      /**
+       * Graphics Class 绘图类 -- demo
+       * 用于生成矢量绘图指令
+       */
+      let stage2 = new createjs.Stage('demo2')
 
-      // var myGraphics = new createjs.Graphics()
-      // myGraphics.beginStroke("red").beginFill("blue").drawRect(20, 20, 100, 50);
-      // var rect0 = new createjs.Shape(myGraphics);
+      // 画线
+      let g = new createjs.Graphics();
+      g.setStrokeStyle(10).beginStroke("#d23c4f").moveTo(400,10).lineTo(600,100)
+      // 简写形式
+      g.ss(20).s('#fafa35').mt(400,100).lt(400,260)
 
-      // var graphics = new createjs.Graphics().beginFill("#ff0000").drawRect(200, 0, 200, 100);
-      // var rect1 = new createjs.Shape(graphics);
+      // 多点折线
+      g.ss(1).s('#000').mt(600,400).lt(600, 200).lt(400,300).lt(500, 550)
 
-      // //交替使用也可以使用Shape类的图形属性渲染上面一样。
-      // var rect2 = new createjs.Shape();
-      // rect2.graphics.beginFill("#ff0000").drawRect(500, 0, 300, 300);
+      let line = new createjs.Shape(g)
 
-      // stage.addChild(circle, circle1, rect0, rect1, rect2);
+      // 圆
+      let g1 = new createjs.Graphics();
+      g1.setStrokeStyle(1);         // 描边
+      g1.beginStroke("#000000");    // 描边颜色
+      g1.beginFill("red");          // 图形填充
+      g1.drawCircle(0,0,100);        // 绘制 (X, X, R)
+      let c1 = new createjs.Shape(g1)     // 实例化Shape对象
+
+      // 矩形
+      let g2 = new createjs.Graphics().beginStroke("red").beginFill("blue").drawRect(150, 0, 200, 100);     // X, Y, W, H
+      let c2 = new createjs.Shape(g2)
+
+      // 命令对象
+      let g3 = new createjs.Graphics();
+      // 每个图形接口调用后会生成一个命令对象，可以使用.command访问，它保存对已创建或附加的最后一个命令的引用
+      let fillCommand = g3.beginFill("green").command;
+      g3.drawCircle(200,200,50);        // 绘制 (X, X, R)
+      let c3 = new createjs.Shape(g3);
+      // 一步操作后，更新填充样式/颜色:
+      setTimeout(() => {
+        fillCommand.style = "gray";
+        stage2.update();          // 不更新舞台，不会重新渲染
+      }, 2000);
+    
+      stage2.addChild(c1, c2, c3, line);
+      stage2.update();
+
+      /**
+       * bitmap Class 图像类
+       * 用于在画布显示列表中渲染图像
+       */
+      let stage3 = new createjs.Stage('demo3')
+
+      // 渲染图片
+      let bitmap = new createjs.Bitmap('./assets/img/hill1.png')
+      bitmap.alpha = 0.6
+      bitmap.cursor = 'help'
+      bitmap.shadow = new createjs.Shadow("#97c89e", 20, 10, 20);      // 创建一个shadow实例Object(color, offsetX, offsetY, blur)
+
+      // 给图片添加遮罩
+      let bitmap2 = new createjs.Bitmap('./assets/img/avatar.jpg')
+      bitmap2.x = 400;        // 图片绘制的起始点X坐标
+      bitmap2.y = 0;          // 图片绘制的起始点Y坐标
+      //遮罩图形
+      let shape = new createjs.Shape();
+      shape.graphics.beginFill('#000').drawCircle(0, 0, 100);
+      shape.x = 500;          // 圆心X坐标
+      shape.y = 100;          // 圆心Y坐标
+      bitmap2.mask = shape;   //给图片bg添加遮罩
+
+
+      let groundBg = new createjs.Bitmap("./assets/img/ground.png").image;
+      let ground = new createjs.Shape();
+      w = stage3.canvas.width;      // 650
+      h = stage3.canvas.height;      // 400
+      stage3.addChild(ground)
+
+      stage3.addChild(bitmap, bitmap2)
+      stage3.update()       // 此处刷新无效
+
+      createjs.Ticker.timingMode = createjs.Ticker.RAF;
+      createjs.Ticker.addEventListener('tick',(event) => {
+        
+        ground.tileW = groundBg.width;
+        ground.y = h - groundBg.height;
+        ground.graphics.beginBitmapFill(groundBg).drawRect(0, 0, w, groundBg.height);
+        ground.cache(0, 0, w, groundBg.height);
+
+        // let deltaS = event.delta / 1000;
+        // ground.x = (ground.x - deltaS * 150) % ground.tileW;
+          
+        stage3.update()
+      });
     }
   </script>
 </body>
