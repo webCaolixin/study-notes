@@ -16,10 +16,6 @@
   <!-- bitmap Class 图像类 -->
   <canvas id="demo3" width="650" height="400"></canvas>
 
-  <!-- <canvas id="demo4" width="650" height="400"></canvas>
-
-  <canvas id="demo5" width="650" height="400"></canvas> -->
-
   
   <script src="https://code.createjs.com/1.0.0/createjs.min.js"></script>
   <script>
@@ -140,6 +136,7 @@
       stage3.addChild(ground)
 
       stage3.addChild(bitmap, bitmap2)
+      
       stage3.update()       // 此处刷新无效
 
       createjs.Ticker.timingMode = createjs.Ticker.RAF;
@@ -149,8 +146,7 @@
         ground.y = h - groundBg.height;
         ground.graphics.beginBitmapFill(groundBg).drawRect(0, 0, w, groundBg.height);
         ground.cache(0, 0, w, groundBg.height);
-
-        // let deltaS = event.delta / 1000;
+        
         // bitmap.x += 10
         // if (bitmap.x + bitmap.image.width >= w) {
         //   bitmap.x = 0;     // 重置回屏幕最右侧
