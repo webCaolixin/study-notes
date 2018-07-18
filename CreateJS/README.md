@@ -12,7 +12,7 @@ CreateJS主要包含如下四个类库：
 * `SoundJS` – 用来简化处理HTML5 audio 音频
 * `PreloadJS` – 帮助管理和协调加载中的一些资源
 
-** 今天，主要来了解一下 `EasrlJS` 库**
+**今天，主要来了解一下 `EaselJS` 库**
 
 ### EaselJS
 ![EaselJS][1]
@@ -271,6 +271,7 @@ CreateJS主要包含如下四个类库：
 
         // 监听舞台上的鼠标点击事件
         stage.addEventListener("stagemousedown", () => {
+          // 跳转播放 jump 动画
           grant.gotoAndPlay("jump");
         });
 

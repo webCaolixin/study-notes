@@ -92,11 +92,19 @@
       let fillCommand = g3.beginFill("green").command;
       g3.drawCircle(200,200,50);        // 绘制 (X, X, R)
       let c3 = new createjs.Shape(g3);
+
       // 一步操作后，更新填充样式/颜色:
       setTimeout(() => {
         fillCommand.style = "gray";
         stage2.update();          // 不更新舞台，不会重新渲染
       }, 2000);
+      
+      // 点击事件
+      // c3.addEventListener('click', () => {
+      //   alert(123)
+      //   fillCommand.style = "gray";
+      //   stage2.update();          // 不更新舞台，不会重新渲染
+      // })
     
       stage2.addChild(c1, c2, c3, line);
       stage2.update();
@@ -143,7 +151,10 @@
         ground.cache(0, 0, w, groundBg.height);
 
         // let deltaS = event.delta / 1000;
-        // ground.x = (ground.x - deltaS * 150) % ground.tileW;
+        // bitmap.x += 10
+        // if (bitmap.x + bitmap.image.width >= w) {
+        //   bitmap.x = 0;     // 重置回屏幕最右侧
+        // }
           
         stage3.update()
       });
